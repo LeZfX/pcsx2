@@ -819,6 +819,8 @@ EXPORT_C GSconfigure()
 #elif defined(__APPLE__)
 		// Rest of macOS UI doesn't use GTK so we need to init it now
 		gtk_init(nullptr, nullptr);;
+                GtkSettings *settings = gtk_settings_get_default();
+                gtk_settings_set_string_property(settings, "gtk-im-module", "quartz", "");
 		// GTK expects us to be using its event loop, rather than Cocoa's
 		// If we call its stuff right now, it'll attempt to drain a static autorelease pool that was already drained by Cocoa (see https://github.com/GNOME/gtk/blob/8c1072fad1cb6a2e292fce2441b4a571f173ce0f/gdk/quartz/gdkeventloop-quartz.c#L640-L646)
 		// We can convince it that touching that pool would be unsafe by running all GTK calls within a CFRunLoop

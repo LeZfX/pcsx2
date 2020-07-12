@@ -180,7 +180,7 @@ void ReadSettings()
     Clampify(SndOutLatencyMS, LATENCY_MIN, LATENCY_MAX);
 
     if (mods[OutputModule] == NULL) {
-        fwprintf(stderr, L"* SPU2-X: Unknown output module '%s' specified in configuration file.\n", temp.wc_str());
+        fwprintf(stderr, L"* SPU2-X: Unknown output module '%s' specified in configuration file.\n", temp.wc_str().data());
         fprintf(stderr, "* SPU2-X: Defaulting to SDL (%S).\n", SDLOut->GetIdent());
         OutputModule = FindOutputModuleById(SDLOut->GetIdent());
     }

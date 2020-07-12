@@ -218,7 +218,7 @@ void Panels::BaseMcdListPanel::CreateLayout()
 
 	s_buttons += s_leftside_buttons		| pxAlignLeft;
 	s_buttons += pxStretchSpacer();
-	s_buttons += s_rightside_buttons	| pxAlignRight;
+	s_buttons += s_rightside_buttons	;
 
 	if( m_FolderPicker )	*this += m_FolderPicker | pxExpand;
 	else					*this += StdPadding;//we need the 'else' because we need these items to land into the proper rows of s_flex.

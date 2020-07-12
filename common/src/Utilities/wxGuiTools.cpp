@@ -261,7 +261,7 @@ wxSizerFlags pxSizerFlags::SubGroup()
 // just because it's *not* where win32 sticks it.  Too bad!
 wxSizerFlags pxSizerFlags::StdButton()
 {
-    return pxBorder().Align(wxALIGN_RIGHT);
+    return pxBorder();
 }
 
 wxSizerFlags pxSizerFlags::Checkbox()
