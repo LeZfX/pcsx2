@@ -248,6 +248,7 @@ void recDSUB_const()
 
 void recDSUB_consts(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info&PROCESS_EE_XMM) );
 
 	GPR_reg64 sval = g_cpuConstRegs[_Rs_];
@@ -276,6 +277,7 @@ void recDSUB_consts(int info)
 
 void recDSUB_constt(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info&PROCESS_EE_XMM) );
 
 	GPR_reg64 tval = g_cpuConstRegs[_Rt_];
@@ -297,6 +299,7 @@ void recDSUB_constt(int info)
 
 void recDSUB_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info&PROCESS_EE_XMM) );
 
 	if (_Rs_ == _Rt_) {
@@ -333,6 +336,7 @@ void recAND_const()
 
 void recAND_constv(int info, int creg, u32 vreg)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	GPR_reg64 cval = g_cpuConstRegs[creg];
@@ -364,6 +368,7 @@ void recAND_constt(int info)
 
 void recAND_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	u32 rs = _Rs_, rt = _Rt_;
@@ -395,6 +400,7 @@ void recOR_const()
 
 void recOR_constv(int info, int creg, u32 vreg)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	GPR_reg64 cval = g_cpuConstRegs[creg];
@@ -426,6 +432,7 @@ void recOR_constt(int info)
 
 void recOR_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	u32 rs = _Rs_, rt = _Rt_;
@@ -457,6 +464,7 @@ void recXOR_const()
 
 void recXOR_constv(int info, int creg, u32 vreg)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	GPR_reg64 cval = g_cpuConstRegs[creg];
@@ -486,6 +494,7 @@ void recXOR_constt(int info)
 
 void recXOR_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	u32 rs = _Rs_, rt = _Rt_;
@@ -516,6 +525,7 @@ void recNOR_const()
 
 void recNOR_constv(int info, int creg, u32 vreg)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	GPR_reg64 cval = g_cpuConstRegs[creg];
@@ -547,6 +557,7 @@ void recNOR_constt(int info)
 
 void recNOR_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	u32 rs = _Rs_, rt = _Rt_;
@@ -582,6 +593,8 @@ void recSLT_const()
 
 void recSLTs_const(int info, int sign, int st)
 {
+	// TODO: Use 64-bit math on x86-64
+	// TODO: Try cmov on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	GPR_reg64 cval = g_cpuConstRegs[st ? _Rt_ : _Rs_];
@@ -607,6 +620,8 @@ void recSLTs_const(int info, int sign, int st)
 
 void recSLTs_(int info, int sign)
 {
+	// TODO: Use 64-bit math on x86-64
+	// TODO: Try cmov on x86-64
 	pxAssert( !(info & PROCESS_EE_XMM) );
 
 	xMOV(eax, 1);

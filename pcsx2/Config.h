@@ -430,6 +430,7 @@ struct Pcsx2Config
 		u32 WindowWidth;
 		u32 WindowHeight;
 		u32 MemoryViewBytesPerRow;
+		wxString EmuCmpHost; // Host for EmuCmp, "port" will open a server, while "host:port" will be a client
 
 		DebugOptions();
 		void LoadSave( IniInterface& conf );

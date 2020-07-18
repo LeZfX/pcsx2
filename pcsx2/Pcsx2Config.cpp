@@ -17,6 +17,7 @@
 
 #include <wx/fileconf.h>
 
+#include "EmuCmp.h"
 #include "Utilities/IniInterface.h"
 #include "Config.h"
 #include "GS.h"
@@ -395,6 +396,7 @@ Pcsx2Config::DebugOptions::DebugOptions()
 	WindowWidth = 0;
 	WindowHeight = 0;
 	MemoryViewBytesPerRow = 16;
+	EmuCmpHost = wxEmptyString;
 }
 
 void Pcsx2Config::DebugOptions::LoadSave( IniInterface& ini )
@@ -408,6 +410,9 @@ void Pcsx2Config::DebugOptions::LoadSave( IniInterface& ini )
 	IniBitfield( WindowWidth );
 	IniBitfield( WindowHeight );
 	IniBitfield( MemoryViewBytesPerRow );
+	if (EmuCmp::Config::enabled) {
+		IniEntry( EmuCmpHost );
+	}
 }
 
 

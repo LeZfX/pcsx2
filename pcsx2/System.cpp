@@ -57,9 +57,9 @@ void RecompiledCodeReserve::_termProfiler()
 {
 }
 
-void* RecompiledCodeReserve::Reserve( size_t size, uptr base, uptr upper_bounds )
+void* RecompiledCodeReserve::Assign( VirtualMemoryManagerPtr allocator, void *baseptr, size_t size )
 {
-	if (!_parent::Reserve(size, base, upper_bounds)) return NULL;
+	if (!_parent::Assign(std::move(allocator), baseptr, size)) return NULL;
 
 	Commit();
 
@@ -111,7 +111,6 @@ void RecompiledCodeReserve::ThrowIfNotOk() const
 		.SetUserMsg( pxE( L"This recompiler was unable to reserve contiguous memory required for internal caches.  This error can be caused by low virtual memory resources, such as a small or disabled swapfile, or by another program that is hogging a lot of memory."
 		));
 }
-
 
 void SysOutOfMemory_EmergencyResponse(uptr blocksize)
 {
@@ -352,11 +351,50 @@ static wxString GetMemoryErrorVM()
 	);
 }
 
+namespace HostMemoryMap {
+	// For debuggers
+	uptr EEmem, IOPmem, VUmem, EErec, IOPrec, VIF0rec, VIF1rec, mVU0rec, mVU1rec, bumpAllocator;
+}
+
+/// Attempts to find a spot near static variables for the main memory
+static VirtualMemoryManagerPtr makeMainMemoryManager() {
+	uptr codeBase = (uptr)(void*)makeMainMemoryManager / (1 << 28) * (1 << 28);
+	for (int offset = 4; offset >= -6; offset--) {
+		uptr base = codeBase + (offset << 28);
+		if ((sptr)base < 0 || (sptr)(base + HostMemoryMap::Size - 1) < 0) {
+			// VTLB will throw a fit if we try to put EE main memory here
+			continue;
+		}
+		auto mgr = std::make_shared<VirtualMemoryManager>("Main Memory Manager", base, HostMemoryMap::Size, /*upper_bounds=*/0, /*strict=*/true);
+		if (mgr->IsOk()) {
+			return mgr;
+		}
+	}
+
+	if (sizeof(void*) == 8) {
+		pxAssertRel(0, "Failed to find a good place for the main memory allocation, recompilers may fail");
+	}
+	return std::make_shared<VirtualMemoryManager>("Main Memory Manager", 0, HostMemoryMap::Size);
+}
+
 // --------------------------------------------------------------------------------------
 //  SysReserveVM  (implementations)
 // --------------------------------------------------------------------------------------
 SysMainMemory::SysMainMemory()
+	: m_mainMemory(makeMainMemoryManager())
+	, m_bumpAllocator(m_mainMemory, HostMemoryMap::bumpAllocatorOffset, HostMemoryMap::Size - HostMemoryMap::bumpAllocatorOffset)
 {
+	uptr base = (uptr)MainMemory()->GetBase();
+	HostMemoryMap::EEmem   = base + HostMemoryMap::EEmemOffset;
+	HostMemoryMap::IOPmem  = base + HostMemoryMap::IOPmemOffset;
+	HostMemoryMap::VUmem   = base + HostMemoryMap::VUmemOffset;
+	HostMemoryMap::EErec   = base + HostMemoryMap::EErecOffset;
+	HostMemoryMap::IOPrec  = base + HostMemoryMap::IOPrecOffset;
+	HostMemoryMap::VIF0rec = base + HostMemoryMap::VIF0recOffset;
+	HostMemoryMap::VIF1rec = base + HostMemoryMap::VIF1recOffset;
+	HostMemoryMap::mVU0rec = base + HostMemoryMap::mVU0recOffset;
+	HostMemoryMap::mVU1rec = base + HostMemoryMap::mVU1recOffset;
+	HostMemoryMap::bumpAllocator = base + HostMemoryMap::bumpAllocatorOffset;
 }
 
 SysMainMemory::~SysMainMemory()
@@ -374,9 +412,9 @@ void SysMainMemory::ReserveAll()
 	DevCon.WriteLn( Color_StrongBlue, "Mapping host memory for virtual systems..." );
 	ConsoleIndentScope indent(1);
 
-	m_ee.Reserve();
-	m_iop.Reserve();
-	m_vu.Reserve();
+	m_ee.Reserve(MainMemory());
+	m_iop.Reserve(MainMemory());
+	m_vu.Reserve(MainMemory());
 }
 
 void SysMainMemory::CommitAll()

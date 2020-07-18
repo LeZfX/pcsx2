@@ -138,6 +138,8 @@ void recDSLL_const()
 	g_cpuConstRegs[_Rd_].UD[0] = (u64)(g_cpuConstRegs[_Rt_].UD[0] << _Sa_);
 }
 
+// TODO: Don't use SSE on x86-64
+
 void recDSLLs_(int info, int sa)
 {
 	int rtreg, rdreg;

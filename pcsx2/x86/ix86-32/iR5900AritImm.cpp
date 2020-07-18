@@ -57,6 +57,7 @@ void recADDI_const( void )
 
 void recADDI_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info&PROCESS_EE_XMM) );
 
 	if ( _Rt_ == _Rs_ ) {
@@ -91,6 +92,7 @@ void recDADDI_const()
 
 void recDADDI_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	pxAssert( !(info&PROCESS_EE_XMM) );
 
 	if( _Rt_ == _Rs_ ) {
@@ -133,6 +135,7 @@ extern u32 s_sltone;
 
 void recSLTIU_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	xMOV(eax, 1);
 
 	xCMP(ptr32[&cpuRegs.GPR.r[ _Rs_ ].UL[ 1 ]], _Imm_ >= 0 ? 0 : 0xffffffff);
@@ -148,7 +151,7 @@ void recSLTIU_(int info)
 	x86SetJ8(j8Ptr[0]);
 	x86SetJ8(j8Ptr[1]);
 
-	xMOV(ptr[&cpuRegs.GPR.r[ _Rt_ ].UL[ 0 ]], eax);
+	xMOV(ptr32[&cpuRegs.GPR.r[ _Rt_ ].UL[ 0 ]], eax);
 	xMOV(ptr32[&cpuRegs.GPR.r[ _Rt_ ].UL[ 1 ]], 0 );
 }
 
@@ -162,6 +165,7 @@ void recSLTI_const()
 
 void recSLTI_(int info)
 {
+	// TODO: Use 64-bit math on x86-64
 	// test silent hill if modding
 	xMOV(eax, 1);
 
@@ -178,7 +182,7 @@ void recSLTI_(int info)
 	x86SetJ8(j8Ptr[0]);
 	x86SetJ8(j8Ptr[1]);
 
-	xMOV(ptr[&cpuRegs.GPR.r[ _Rt_ ].UL[ 0 ]], eax);
+	xMOV(ptr32[&cpuRegs.GPR.r[ _Rt_ ].UL[ 0 ]], eax);
 	xMOV(ptr32[&cpuRegs.GPR.r[ _Rt_ ].UL[ 1 ]], 0 );
 }
 
@@ -192,6 +196,7 @@ void recANDI_const()
 
 void recLogicalOpI(int info, int op)
 {
+	// TODO: Use 64-bit math on x86-64
 	if ( _ImmU_ != 0 )
 	{
 		if( _Rt_ == _Rs_ ) {
